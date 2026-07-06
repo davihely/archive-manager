@@ -13,7 +13,7 @@ class DirectoryController extends Controller
     {
         $files = Storage::disk('c-drive')->allFiles('Temp');
 
-        $directory = collect($files)->reduce(function ($carry, $filePath) {
+        $tree = collect($files)->reduce(function ($carry, $filePath) {
             $segments = explode('/', $filePath);
             
             $current = &$carry;
@@ -39,6 +39,21 @@ class DirectoryController extends Controller
 
         }, []); 
 
+        $directory = $this->formatTreeValues($tree);
+
         return Inertia::render('Index', compact('directory'));
+    }
+
+    private function formatTreeValues(array $tree): array
+    {
+        $formatted = array_values($tree);
+
+        foreach ($formatted as &$node) {
+            if (isset($node['children']) && !empty($node['children'])) {
+                $node['children'] = $this->formatTreeValues($node['children']);
+            }
+        }
+
+        return $formatted;
     }
 }

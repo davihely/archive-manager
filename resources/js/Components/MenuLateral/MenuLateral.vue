@@ -118,7 +118,7 @@ function openFolderModal() {
         </div>
         <ModalBase ref="fileModal" v-bind="fileModalData" />
         <ModalBase ref="folderModal" v-bind="folderModalData" />
-        <ItemPasta :directory="directory" />
+        <ItemPasta :pastas="directory" />
         <ProgressoBarra />
     </aside>
 </template>
