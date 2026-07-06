@@ -2,9 +2,6 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\DirectoryController;
 
-Route::get('/', function () {
-    return Inertia::render('Index');
-});
-
+Route::get('/', [DirectoryController::class, 'index'])->name('index');

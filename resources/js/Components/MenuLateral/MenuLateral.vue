@@ -6,6 +6,10 @@ import type { ModalPayLoad } from "../../Interfaces/IModal";
 import { ref, useTemplateRef, onMounted } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
+const props = defineProps<{
+    directory: { type: Array<any>; required: true };
+}>();
+
 const drowpDownAberto = ref(false);
 const dropDown = useTemplateRef("dropdownRef");
 const fileModalData = ref<ModalPayLoad | null>(null);
@@ -114,7 +118,7 @@ function openFolderModal() {
         </div>
         <ModalBase ref="fileModal" v-bind="fileModalData" />
         <ModalBase ref="folderModal" v-bind="folderModalData" />
-        <ItemPasta />
+        <ItemPasta :directory="directory" />
         <ProgressoBarra />
     </aside>
 </template>
