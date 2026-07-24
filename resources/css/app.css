@@ -10,3 +10,16 @@
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 }
+
+.bg-custom-blue {
+    background-color: #0d6efd !important;
+}
+.text-custom-blue {
+    color: #0d6efd !important;
+}
+[data-bs-theme="dark"] .bg-custom-blue {
+    background-color: #3b82f6 !important;
+}
+[data-bs-theme="dark"] .text-custom-blue {
+    color: #3b82f6 !important;
+}

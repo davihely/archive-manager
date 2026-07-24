@@ -46,7 +46,7 @@ defineExpose({
                 <button
                     @click="visible = false"
                     type="button"
-                    class="btn-close btn-close-white"
+                    class="btn-close"
                     aria-label="Close"
                 ></button>
             </div>

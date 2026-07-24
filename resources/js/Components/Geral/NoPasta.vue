@@ -15,6 +15,31 @@ function alternarPasta() {
         console.log("Arquivo clicado:", props.item.name);
     }
 }
+
+function onBeforeEnter(el: Element) {
+    (el as HTMLElement).style.height = "0";
+}
+
+function onEnter(el: Element) {
+    const element = el as HTMLElement;
+    element.style.height = `${element.scrollHeight}px`;
+}
+
+function onAfterEnter(el: Element) {
+    (el as HTMLElement).style.height = "";
+}
+
+function onBeforeLeave(el: Element) {
+    const element = el as HTMLElement;
+    element.style.height = `${element.scrollHeight}px`;
+}
+
+function onLeave(el: Element) {
+    const element = el as HTMLElement;
+    requestAnimationFrame(() => {
+        element.style.height = "0";
+    });
+}
 </script>
 
 <template>
@@ -23,20 +48,17 @@ function alternarPasta() {
             @click="alternarPasta"
             class="d-flex align-items-center gap-2 px-2 py-1 rounded cursor-pointer text-body-secondary user-select-none"
             :class="{
-                'bg-active-folder text-body fw-medium':
+                'bg-primary-subtle text-primary-emphasis fw-medium':
                     item.type === 'folder' && aberto,
                 'hover-bg-light': !aberto,
             }"
         >
             <i
-                class="bi small"
-                :class="[
-                    item.type === 'file'
-                        ? 'bi-chevron-down invisible'
-                        : aberto
-                          ? 'bi-chevron-down'
-                          : 'bi-chevron-right',
-                ]"
+                class="bi bi-chevron-right small chevron-icon"
+                :class="{
+                    invisible: item.type === 'file',
+                    'chevron-rotated': aberto,
+                }"
             ></i>
 
             <i
@@ -53,21 +75,29 @@ function alternarPasta() {
             <span class="small text-truncate">{{ item.name }}</span>
         </div>
 
-        <div
-            v-if="
-                item.type === 'folder' &&
-                aberto &&
-                item.children &&
-                item.children.length > 0
-            "
-            class="ps-3 mt-1 d-flex flex-column gap-1 border-start border-secondary-subtle ms-2"
+        <Transition
+            @before-enter="onBeforeEnter"
+            @enter="onEnter"
+            @after-enter="onAfterEnter"
+            @before-leave="onBeforeLeave"
+            @leave="onLeave"
         >
-            <NoPasta
-                v-for="filho in item.children"
-                :key="filho.name"
-                :item="filho"
-            />
-        </div>
+            <div
+                v-if="
+                    item.type === 'folder' &&
+                    item.children &&
+                    item.children.length > 0
+                "
+                v-show="aberto"
+                class="ps-3 mt-1 d-flex flex-column gap-1 border-start border-secondary-subtle ms-2 pasta-filhos"
+            >
+                <NoPasta
+                    v-for="filho in item.children"
+                    :key="filho.name"
+                    :item="filho"
+                />
+            </div>
+        </Transition>
     </div>
 </template>
 
@@ -77,5 +107,19 @@ function alternarPasta() {
 }
 .cursor-pointer {
     cursor: pointer;
+}
+.chevron-icon {
+    transition: transform 150ms ease;
+}
+.chevron-rotated {
+    transform: rotate(90deg);
+}
+.pasta-filhos {
+    overflow: hidden;
+}
+.v-enter-active,
+.v-leave-active {
+    transition: height 200ms ease;
+    overflow: hidden;
 }
 </style>

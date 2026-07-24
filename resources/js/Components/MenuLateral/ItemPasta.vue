@@ -5,7 +5,6 @@ import type INoPasta from "../../Interfaces/INoPasta.ts";
 const props = defineProps<{
     pastas?: INoPasta[];
 }>();
-console.log(props.pastas);
 </script>
 
 <template>

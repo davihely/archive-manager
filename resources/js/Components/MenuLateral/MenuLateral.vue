@@ -123,10 +123,6 @@ function openFolderModal() {
     </aside>
 </template>
 <style scoped>
-.bg-active-folder {
-    background-color: #e8f0fe;
-    color: #0d6efd;
-}
 .v-enter-active {
     transition: all 150ms ease;
 }

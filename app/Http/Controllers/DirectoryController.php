@@ -6,10 +6,44 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 
 class DirectoryController extends Controller
 {
-    public function index()
+    public function index($folder = null)
+    {
+        $files = Storage::disk('c-drive')->allFiles($folder);
+        $items = [];
+
+        foreach ($files as $filePath) {
+            $relative = Str::after($filePath, $folder . '/');   
+            $segments = explode('/', $relative);                
+            $name = $segments[0];                               
+            $type = count($segments) > 1 ? 'folder' : 'file';    
+
+            if (!isset($items[$name])) {                        
+                $items[$name] = [
+                    'name' => $name,
+                    'type' => $type,
+                ];
+            }
+        }
+
+        $currentDir = array_values($items);
+        $urlPath = explode('/', request()->path());
+        $breadCrumb = [];
+
+        foreach ($urlPath as $index => $valor) {
+            Arr::set($breadCrumb, "$index.label", $valor);
+            Arr::set($breadCrumb, "$index.route", implode('/', array_slice($urlPath, 0, $index + 1)));
+        }
+
+        $directory = $this->sideMenu();
+
+        return Inertia::render('Index', compact('currentDir', 'breadCrumb', 'directory'));
+    }
+
+    public function sideMenu()
     {
         $files = Storage::disk('c-drive')->allFiles('Temp');
 
@@ -41,7 +75,7 @@ class DirectoryController extends Controller
 
         $directory = $this->formatTreeValues($tree);
 
-        return Inertia::render('Index', compact('directory'));
+        return $directory;
     }
 
     private function formatTreeValues(array $tree): array
