@@ -4,32 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DirectoryController extends Controller
 {
     public function index($folder = null)
     {
-        $files = Storage::disk('c-drive')->allFiles($folder);
+        $folder = $folder ?? '';
+        $disk = Storage::disk('c-drive');
         $items = [];
 
-        foreach ($files as $filePath) {
-            $relative = Str::after($filePath, $folder . '/');   
-            $segments = explode('/', $relative);                
-            $name = $segments[0];                               
-            $type = count($segments) > 1 ? 'folder' : 'file';    
-
-            if (!isset($items[$name])) {                        
-                $items[$name] = [
-                    'name' => $name,
-                    'type' => $type,
-                ];
-            }
+        foreach ($disk->directories($folder) as $path) {
+            $items[] = ['name' => basename($path), 'type' => 'folder'];
         }
 
-        $currentDir = array_values($items);
+        foreach ($disk->files($folder) as $path) {
+            $items[] = ['name' => basename($path), 'type' => 'file'];
+        }
+
+        $currentDir = $items;
         $urlPath = explode('/', request()->path());
         $breadCrumb = [];
 
@@ -45,49 +41,46 @@ class DirectoryController extends Controller
 
     public function sideMenu()
     {
-        $files = Storage::disk('c-drive')->allFiles('Temp');
-
-        $tree = collect($files)->reduce(function ($carry, $filePath) {
-            $segments = explode('/', $filePath);
-            
-            $current = &$carry;
-
-            foreach ($segments as $index => $segment) {
-                $isLast = ($index === count($segments) - 1);
-                $type = $isLast ? 'file' : 'folder';
-
-                if (!isset($current[$segment])) {
-                    $current[$segment] = [
-                        'name' => $segment,
-                        'type' => $type,
-                        'children' => []
-                    ];
-                }
-
-                if ($type === 'folder') {
-                    $current = &$current[$segment]['children'];
-                }
-            }
-
-            return $carry;
-
-        }, []); 
-
-        $directory = $this->formatTreeValues($tree);
-
-        return $directory;
+        return $this->buildTree('Temp');
     }
 
-    private function formatTreeValues(array $tree): array
-    {
-        $formatted = array_values($tree);
+    public function getArquivoConteudo(string $arquivo): JsonResponse{
+        $conteudo = Storage::disk('c-drive')->get($arquivo);
+        return response()->json([
+            'conteudo' => $conteudo
+        ]);
+    }
 
-        foreach ($formatted as &$node) {
-            if (isset($node['children']) && !empty($node['children'])) {
-                $node['children'] = $this->formatTreeValues($node['children']);
-            }
+    public function downloadArquivo(string $arquivo): StreamedResponse{
+        if(Storage::disk('c-drive')->exists($arquivo)){
+            return Storage::disk('c-drive')->download($arquivo);
+        }
+    }
+
+    public function arquivoRaw(string $arquivo): StreamedResponse{
+        return Storage::disk('c-drive')->response($arquivo);
+    }
+
+    private function buildTree(string $path): array
+    {
+        $disk = Storage::disk('c-drive');
+        $tree = [];
+
+        foreach ($disk->directories($path) as $dirPath) {
+            $tree[] = [
+                'name' => basename($dirPath),
+                'type' => 'folder',
+                'children' => $this->buildTree($dirPath),
+            ];
         }
 
-        return $formatted;
+        foreach ($disk->files($path) as $filePath) {
+            $tree[] = [
+                'name' => basename($filePath),
+                'type' => 'file',
+            ];
+        }
+
+        return $tree;
     }
 }
