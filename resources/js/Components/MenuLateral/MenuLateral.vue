@@ -8,8 +8,9 @@ import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps<{
     directory: { type: Array<any>; required: true };
+    disk: { type: Array<any>; required: true };
 }>();
-
+console.log(props.disk);
 const drowpDownAberto = ref(false);
 const dropDown = useTemplateRef("dropdownRef");
 const fileModalData = ref<ModalPayLoad | null>(null);
@@ -119,7 +120,7 @@ function openFolderModal() {
         <ModalBase ref="fileModal" v-bind="fileModalData" />
         <ModalBase ref="folderModal" v-bind="folderModalData" />
         <ItemPasta :pastas="directory" />
-        <ProgressoBarra />
+        <ProgressoBarra :disk="disk" />
     </aside>
 </template>
 <style scoped>

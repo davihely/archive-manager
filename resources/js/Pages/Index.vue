@@ -7,6 +7,7 @@ const props = defineProps<{
     directory: { type: Array<any>; required: true };
     currentDir: { type: Array<any>; required: true };
     breadCrumb: { type: Array<any>; required: true };
+    disk: { type: Array<any>; required: true };
 }>();
 </script>
 
@@ -14,7 +15,7 @@ const props = defineProps<{
     <div class="vh-100 d-flex flex-column text-body overflow-hidden">
         <Header />
         <div class="d-flex flex-grow-1 overflow-hidden">
-            <MenuLateral :directory="directory" />
+            <MenuLateral :directory="directory" :disk="disk" />
             <ConteudoPrincipal
                 :currentDir="currentDir"
                 :breadCrumb="breadCrumb"

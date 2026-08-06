@@ -35,8 +35,9 @@ class DirectoryController extends Controller
         }
 
         $directory = $this->sideMenu();
+        $disk = $this->getFreeDiskSize();
 
-        return Inertia::render('Index', compact('currentDir', 'breadCrumb', 'directory'));
+        return Inertia::render('Index', compact('currentDir', 'breadCrumb', 'directory', 'disk'));
     }
 
     public function sideMenu()
@@ -55,6 +56,23 @@ class DirectoryController extends Controller
         if(Storage::disk('c-drive')->exists($arquivo)){
             return Storage::disk('c-drive')->download($arquivo);
         }
+    }
+
+    public function getFreeDiskSize(){
+        $disk = Storage::disk('c-drive')->path('');
+
+        $freeSpace = disk_free_space($disk);
+        $totalSpace = disk_total_space($disk);
+
+        $freeSpaceGB = number_format($freeSpace / (1024 * 1024 * 1024), 2);
+        $totalSpaceGB = number_format($totalSpace / (1024 * 1024 * 1024), 2);
+
+        $diskData = [
+            'freeSpace' => $freeSpaceGB,
+            'totalSpace' => $totalSpaceGB
+        ];
+
+        return $diskData;
     }
 
     public function arquivoRaw(string $arquivo): StreamedResponse{
