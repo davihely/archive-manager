@@ -7,4 +7,10 @@ export type ModalPayLoad = {
     inputValue: string;
     type: TipoRequisicao;
     structureType: StructureType;
+    path?: string;
 };
+
+export type FormPayLoad = Pick<
+    ModalPayLoad,
+    "inputValue" | "type" | "structureType" | "path"
+>;

@@ -41,7 +41,7 @@ return [
         'c-drive' => [
             'driver' => 'local',
             'root' => 'C:\\',
-            'throw' => false,
+            'throw' => true,
         ],
 
         'public' => [

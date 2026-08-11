@@ -10,7 +10,7 @@ const props = defineProps<{
     directory: { type: Array<any>; required: true };
     disk: { type: Array<any>; required: true };
 }>();
-console.log(props.disk);
+
 const drowpDownAberto = ref(false);
 const dropDown = useTemplateRef("dropdownRef");
 const fileModalData = ref<ModalPayLoad | null>(null);
@@ -46,11 +46,11 @@ const fileModal = useTemplateRef("fileModal");
 const folderModal = useTemplateRef("folderModal");
 
 function openFileModal() {
-    fileModal.value?.open();
+    fileModal.value?.open(fileModalData.value);
 }
 
 function openFolderModal() {
-    folderModal.value?.open();
+    folderModal.value?.open(folderModalData.value);
 }
 </script>
 <template>
@@ -75,7 +75,7 @@ function openFolderModal() {
                     >
                         <li>
                             <a
-                                @click="openFileModal"
+                                @click="openFileModal(startedFileModalData)"
                                 class="dropdown-item d-flex align-items-center gap-2 py-2"
                                 href="#"
                                 ><i

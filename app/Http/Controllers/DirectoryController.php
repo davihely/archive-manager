@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Services\DiskInfoService;
 
 class DirectoryController extends Controller
 {
+    public function __construct(private DiskInfoService $diskInfoService)
+    {
+    }
+
     public function index($folder = null)
     {
         $folder = $folder ?? '';
@@ -35,7 +37,7 @@ class DirectoryController extends Controller
         }
 
         $directory = $this->sideMenu();
-        $disk = $this->getFreeDiskSize();
+        $disk = $this->diskInfoService->getFreeDiskSize();
 
         return Inertia::render('Index', compact('currentDir', 'breadCrumb', 'directory', 'disk'));
     }
@@ -43,40 +45,6 @@ class DirectoryController extends Controller
     public function sideMenu()
     {
         return $this->buildTree('Temp');
-    }
-
-    public function getArquivoConteudo(string $arquivo): JsonResponse{
-        $conteudo = Storage::disk('c-drive')->get($arquivo);
-        return response()->json([
-            'conteudo' => $conteudo
-        ]);
-    }
-
-    public function downloadArquivo(string $arquivo): StreamedResponse{
-        if(Storage::disk('c-drive')->exists($arquivo)){
-            return Storage::disk('c-drive')->download($arquivo);
-        }
-    }
-
-    public function getFreeDiskSize(){
-        $disk = Storage::disk('c-drive')->path('');
-
-        $freeSpace = disk_free_space($disk);
-        $totalSpace = disk_total_space($disk);
-
-        $freeSpaceGB = number_format($freeSpace / (1024 * 1024 * 1024), 2);
-        $totalSpaceGB = number_format($totalSpace / (1024 * 1024 * 1024), 2);
-
-        $diskData = [
-            'freeSpace' => $freeSpaceGB,
-            'totalSpace' => $totalSpaceGB
-        ];
-
-        return $diskData;
-    }
-
-    public function arquivoRaw(string $arquivo): StreamedResponse{
-        return Storage::disk('c-drive')->response($arquivo);
     }
 
     private function buildTree(string $path): array
