@@ -4,7 +4,7 @@ import ItemPasta from "./ItemPasta.vue";
 import ProgressoBarra from "./ProgressoBarra.vue";
 import type { ModalPayLoad } from "../../Interfaces/IModal";
 import { ref, useTemplateRef, onMounted, watch } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps<{
@@ -12,8 +12,11 @@ const props = defineProps<{
     disk: { type: Array<any>; required: true };
 }>();
 
+const page = usePage();
+
 const formUpload = useForm({
-    file: null,
+    file: null as File | null,
+    path: "",
 });
 
 const drowpDownAberto = ref(false);
@@ -59,6 +62,7 @@ function openFolderModal() {
 }
 
 function handleSubmit() {
+    formUpload.path = page.url.replace(/^\/+/, "");
     formUpload.post("/arquivo/upload");
 }
 </script>

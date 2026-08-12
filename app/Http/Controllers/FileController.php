@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class FileController extends Controller
 {
@@ -30,7 +31,21 @@ class FileController extends Controller
         return Storage::disk('c-drive')->response($arquivo);
     }
 
-    public function upload(Request $request){
-        dd($request->all());
+    public function upload(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'file' => ['required', 'file'],
+            'path' => ['required', 'string'],
+        ]);
+        if(Storage::disk('c-drive')->exists($data['path'] . '/' . $data['file']->getClientOriginalName())){
+            throw new \RuntimeException("Já existe arquivo com o nome \"{$data['file']->getClientOriginalName()}\" nesse local.");
+        }
+        Storage::disk('c-drive')->putFileAs(
+            $data['path'],
+            $data['file'],
+            $data['file']->getClientOriginalName()
+        );
+
+        return back();
     }
 }
