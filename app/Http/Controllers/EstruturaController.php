@@ -14,13 +14,17 @@ class EstruturaController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'path' => ['required', 'string'],
-            'structureType' => ['required', 'in:file,folder'],
-            'inputValue' => ['required', 'string'],
-            'type' => ['required', 'string']
-        ]);
-        $this->estrutura->criar($data);
+        try {
+            $data = $request->validate([
+                'path' => ['required', 'string'],
+                'structureType' => ['required', 'in:file,folder'],
+                'inputValue' => ['required', 'string'],
+                'type' => ['required', 'string']
+            ]);
+            $this->estrutura->criar($data);
+        }catch(\Exception $e){
+            return back()->withErrors(['message' => $e->getMessage()]);
+        }
 
         return back();
     }

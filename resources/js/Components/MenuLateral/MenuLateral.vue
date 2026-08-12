@@ -3,13 +3,18 @@ import ModalBase from "../Geral/Modal.vue";
 import ItemPasta from "./ItemPasta.vue";
 import ProgressoBarra from "./ProgressoBarra.vue";
 import type { ModalPayLoad } from "../../Interfaces/IModal";
-import { ref, useTemplateRef, onMounted } from "vue";
+import { ref, useTemplateRef, onMounted, watch } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps<{
     directory: { type: Array<any>; required: true };
     disk: { type: Array<any>; required: true };
 }>();
+
+const formUpload = useForm({
+    file: null,
+});
 
 const drowpDownAberto = ref(false);
 const dropDown = useTemplateRef("dropdownRef");
@@ -52,6 +57,10 @@ function openFileModal() {
 function openFolderModal() {
     folderModal.value?.open(folderModalData.value);
 }
+
+function handleSubmit() {
+    formUpload.post("/arquivo/upload");
+}
 </script>
 <template>
     <aside
@@ -75,7 +84,7 @@ function openFolderModal() {
                     >
                         <li>
                             <a
-                                @click="openFileModal(startedFileModalData)"
+                                @click="openFileModal"
                                 class="dropdown-item d-flex align-items-center gap-2 py-2"
                                 href="#"
                                 ><i
@@ -103,15 +112,25 @@ function openFolderModal() {
                         </li>
 
                         <li>
-                            <a
-                                class="dropdown-item d-flex align-items-center gap-2 py-2"
-                                href="#"
-                            >
-                                <i
-                                    class="bi bi-plus-lg text-body-secondary"
-                                ></i>
-                                upload file
-                            </a>
+                            <form @submit.prevent>
+                                <label
+                                    class="dropdown-item upload-label d-flex align-items-center gap-2 py-2 mb-0"
+                                >
+                                    <i
+                                        class="bi bi-plus-lg text-body-secondary"
+                                    ></i>
+                                    upload file
+                                    <input
+                                        type="file"
+                                        class="d-none"
+                                        @change="handleSubmit"
+                                        @input="
+                                            formUpload.file =
+                                                $event.target.files[0]
+                                        "
+                                    />
+                                </label>
+                            </form>
                         </li>
                     </ul>
                 </Transition>
@@ -136,5 +155,9 @@ function openFolderModal() {
 .v-leave-to {
     opacity: 0;
     transform: translateY(-10px) scale(0.95);
+}
+
+.upload-label {
+    cursor: pointer;
 }
 </style>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
@@ -27,5 +28,9 @@ class FileController extends Controller
     public function raw(string $arquivo): StreamedResponse
     {
         return Storage::disk('c-drive')->response($arquivo);
+    }
+
+    public function upload(Request $request){
+        dd($request->all());
     }
 }

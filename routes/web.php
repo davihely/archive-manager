@@ -12,6 +12,9 @@ Route::get('/arquivo/conteudo/{arquivo}', [FileController::class, 'conteudo'])
      ->where('arquivo', '.*')
      ->name('arquivo.conteudo');
 
+Route::post('/arquivo/upload', [FileController::class, 'upload'])
+    ->name('arquivo.upload');
+
 Route::get('/download/{arquivo}', [FileController::class, 'download'])
      ->where('arquivo', '.*')
     ->name('arquivo.download');

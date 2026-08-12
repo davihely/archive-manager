@@ -21,14 +21,27 @@ const form = useForm<FormPayLoad>({
 });
 
 function open(data: ModalPayLoad) {
+    form.inputValue = data.inputValue;
     form.type = data.type;
     form.structureType = data.structureType;
+    form.path = page.url.replace(/^\/+/, "");
     visible.value = true;
 }
 
 defineExpose({
     open,
 });
+
+function handleSubmit() {
+    form.post("/estrutura", {
+        onSuccess: () => {
+            visible.value = false;
+        },
+        onError: () => {
+            form.reset();
+        },
+    });
+}
 </script>
 <template>
     <Dialog
@@ -43,7 +56,7 @@ defineExpose({
             },
         }"
     >
-        <form method="post" @submit.prevent="form.post('/estrutura')">
+        <form method="post" @submit.prevent="handleSubmit">
             <div
                 class="modal-content rounded-4 border border-secondary-subtle shadow-lg bg-body text-body p-2"
             >
@@ -80,6 +93,12 @@ defineExpose({
                         :placeholder="`Enter ${modalProps.structureType} name...`"
                         autofocus
                     />
+                    <span
+                        class="mt-1 block text-sm text-red-600"
+                        v-if="form.errors.message"
+                    >
+                        {{ form.errors.message }}
+                    </span>
                     <input type="hidden" name="type" v-model="form.type" />
                     <input
                         type="hidden"
