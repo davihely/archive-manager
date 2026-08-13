@@ -22,7 +22,7 @@ class EstruturaController extends Controller
                 'type' => ['required', 'string']
             ]);
             $this->estrutura->criar($data);
-        }catch(\Exception $e){
+        }catch(\RuntimeException $e){
             return back()->withErrors(['message' => $e->getMessage()]);
         }
 

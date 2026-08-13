@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Link, usePage } from "@inertiajs/vue3";
+import { ref } from "vue";
 import type INoPasta from "../../Interfaces/INoPasta";
 import { obterIconeArquivo } from "../../Utils/arquivoTipo";
+import ContextMenu from "primevue/contextmenu";
 
 const props = defineProps<{
     item: INoPasta;
@@ -9,14 +11,29 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: "abrir-arquivo", item: INoPasta): void;
+    (e: "abrir-menu-botao-direito", item: INoPasta): void;
 }>();
 
 const page = usePage();
+
+const menu = ref();
+
+const selectedStructure = ref();
+
+const items = ref([
+    { label: "Copy", icon: "pi pi-copy" },
+    { label: "Rename", icon: "pi pi-file-edit" },
+]);
+
+const onRightClick = (structure) => {
+    emit("abrir-menu-botao-direito", structure);
+};
 </script>
 
 <template>
     <div
         class="card file-card rounded-4 p-3 cursor-pointer shadow-sm border-secondary-subtle bg-body"
+        @contextmenu="onRightClick(item)"
     >
         <div
             class="flex-grow-1 d-flex align-items-center justify-content-center"

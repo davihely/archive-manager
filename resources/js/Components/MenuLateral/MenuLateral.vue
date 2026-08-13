@@ -2,13 +2,14 @@
 import ModalBase from "../Geral/Modal.vue";
 import ItemPasta from "./ItemPasta.vue";
 import ProgressoBarra from "./ProgressoBarra.vue";
+import type INoPasta from "../Interfaces/INoPasta";
 import type { ModalPayLoad } from "../../Interfaces/IModal";
-import { ref, useTemplateRef, onMounted, watch } from "vue";
+import { ref, useTemplateRef, onMounted } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps<{
-    directory: { type: Array<any>; required: true };
+    directory: INoPasta[];
     disk: { type: Array<any>; required: true };
 }>();
 
@@ -25,6 +26,7 @@ const fileModalData = ref<ModalPayLoad | null>(null);
 const folderModalData = ref<ModalPayLoad | null>(null);
 
 onClickOutside(dropDown, (event) => (drowpDownAberto.value = false));
+
 function toggleDropdown() {
     drowpDownAberto.value = !drowpDownAberto.value;
 }
@@ -62,7 +64,8 @@ function openFolderModal() {
 }
 
 function handleSubmit() {
-    formUpload.path = page.url.replace(/^\/+/, "");
+    const urlDecodificada = decodeURIComponent(page.url);
+    formUpload.path = urlDecodificada.replace(/^\/+/, "");
     formUpload.post("/arquivo/upload");
 }
 </script>
@@ -78,7 +81,7 @@ function handleSubmit() {
                     class="btn bg-custom-blue text-white w-100 fw-medium shadow-sm rounded-3 py-2 d-flex justify-content-center align-items-center px-3"
                     type="button"
                 >
-                    <span>Add New</span>
+                    <span>Novo</span>
                 </button>
                 <Transition>
                     <ul
@@ -87,26 +90,25 @@ function handleSubmit() {
                         style="font-size: 0.875rem"
                     >
                         <li>
-                            <a
-                                @click="openFileModal"
+                            <button
+                                @click="(openFileModal(), toggleDropdown())"
                                 class="dropdown-item d-flex align-items-center gap-2 py-2"
-                                href="#"
-                                ><i
+                            >
+                                <i
                                     class="bi bi-file-earmark-text text-body-secondary"
                                 ></i>
-                                Novo Arquivo</a
-                            >
+                                Novo Arquivo
+                            </button>
                         </li>
 
                         <li>
-                            <a
-                                @click="openFolderModal"
+                            <button
+                                @click="(openFolderModal(), toggleDropdown())"
                                 class="dropdown-item d-flex align-items-center gap-2 py-2"
-                                href="#"
                             >
                                 <i class="bi bi-folder text-body-secondary"></i>
                                 Nova Pasta
-                            </a>
+                            </button>
                         </li>
 
                         <li>
@@ -123,7 +125,7 @@ function handleSubmit() {
                                     <i
                                         class="bi bi-plus-lg text-body-secondary"
                                     ></i>
-                                    upload file
+                                    Upload de arquivo
                                     <input
                                         type="file"
                                         class="d-none"
@@ -134,6 +136,26 @@ function handleSubmit() {
                                         "
                                     />
                                 </label>
+                                <div
+                                    v-if="formUpload.progress"
+                                    class="progress mx-3 mb-2"
+                                    style="height: 4px"
+                                >
+                                    <div
+                                        class="progress-bar"
+                                        :style="{
+                                            width:
+                                                formUpload.progress.percentage +
+                                                '%',
+                                        }"
+                                    ></div>
+                                </div>
+                                <div
+                                    v-if="formUpload.errors.file"
+                                    class="px-3 pb-2 small text-danger"
+                                >
+                                    {{ formUpload.errors.file }}
+                                </div>
                             </form>
                         </li>
                     </ul>

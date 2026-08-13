@@ -10,6 +10,7 @@ import type INoPasta from "../Interfaces/INoPasta";
 import type IBreadcrumb from "../Interfaces/IBreadcrumb";
 import type IArquivoSelecionado from "../Interfaces/IArquivoSelecionado";
 import { obterIconeArquivo, obterCategoriaArquivo } from "../Utils/arquivoTipo";
+import ContextMenu from "primevue/contextmenu";
 
 const page = usePage();
 
@@ -42,12 +43,27 @@ const abrirArquivo = (dir: INoPasta) => {
     }
 };
 
+const abrirMenuBotaoDireito = (dir: INoPasta) => {
+    console.log(dir);
+    selectedStructure.value = dir;
+    menu.value.show(event);
+};
+
 const getArquivoConteudo = async (arquivo: string) => {
     const url = route("arquivo.conteudo", { arquivo });
     const response = await axios.get(url);
 
     return response.data.conteudo;
 };
+
+const menu = ref();
+
+const selectedStructure = ref();
+
+const items = ref([
+    { label: "Copy", icon: "pi pi-copy" },
+    { label: "Rename", icon: "pi pi-file-edit" },
+]);
 </script>
 
 <template>
@@ -58,8 +74,13 @@ const getArquivoConteudo = async (arquivo: string) => {
             class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4"
         >
             <div class="col" v-for="dir in props.currentDir" :key="dir.name">
-                <CartaoItem :item="dir" @abrir-arquivo="abrirArquivo" />
+                <CartaoItem
+                    :item="dir"
+                    @abrir-arquivo="abrirArquivo"
+                    @abrir-menu-botao-direito="abrirMenuBotaoDireito"
+                />
             </div>
+            <ContextMenu ref="menu" :model="items" />
         </div>
         <VisualizadorArquivo
             ref="arquivoModal"
