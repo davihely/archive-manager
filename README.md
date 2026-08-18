@@ -1,4 +1,4 @@
-# Gerenciado de Arquivos
+# Gerenciador de Arquivos
 
 Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arquivos e pastas direto do disco do servidor, sem passar por um banco de dados. Construído com Laravel no backend e Vue 3 + Inertia no frontend, numa única aplicação sem API REST separada.
 
@@ -44,7 +44,7 @@ O disco usado pela aplicação (`c-drive`, em `config/filesystems.php`) aponta d
 
 ```bash
 # 1. Clonar o repositório
-git clone [ADICIONAR LINK] archive-manager
+git clone https://github.com/davihely/archive-manager.git
 cd archive-manager
 
 # 2. Instalar dependências PHP
