@@ -18,7 +18,6 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 - Download de qualquer arquivo do diretório atual.
 - Espaço livre e total do disco exibido na barra lateral.
 - Alternância entre tema claro e escuro.
-- Modo somente-leitura por configuração, que bloqueia escrita no backend e esconde as ações de escrita na interface.
 
 ## Decisões técnicas
 
