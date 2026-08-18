@@ -1,4 +1,4 @@
-# Archive Manager
+# Gerenciado de Arquivos
 
 Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arquivos e pastas direto do disco do servidor, sem passar por um banco de dados. Construído com Laravel no backend e Vue 3 + Inertia no frontend, numa única aplicação sem API REST separada.
 
@@ -18,8 +18,6 @@ Demo ao vivo: [ADICIONAR LINK]
 - Download de qualquer arquivo do diretório atual.
 - Espaço livre e total do disco exibido na barra lateral.
 - Alternância entre tema claro e escuro.
-
-Renomear e excluir arquivos/pasta já têm rota e lógica prontas no backend (`PUT`/`DELETE /estrutura`, tratando nome duplicado e item inexistente), mas a integração dessas ações no menu de contexto do frontend ainda está incompleta.
 
 ## Tecnologias
 
@@ -72,12 +70,6 @@ composer run dev
 ```
 
 Com isso, a aplicação fica disponível em `http://localhost:8000`.
-
-## Decisões técnicas
-
-Não existe uma tabela de "arquivos" no banco — toda leitura e escrita passa direto pelo `Storage::disk('c-drive')` do Laravel, então o disco é a única fonte de verdade e não há risco de o banco ficar dessincronizado com o que está no filesystem. O SQLite fica reservado só para o que é do próprio framework (sessão, cache, fila).
-
-Erros de domínio (nome duplicado, item que já não existe mais) são `RuntimeException` lançadas nos models (`Estrutura`, `File`) e capturadas no controller, que devolve o erro via `withErrors()` do Inertia. Isso deixa a mensagem específica chegando pronta no `form.errors` do Vue, sem precisar montar tratamento de erro manual em cada componente.
 
 ## Autor
 
