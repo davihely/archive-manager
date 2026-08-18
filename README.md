@@ -1,58 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Archive Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arquivos e pastas direto do disco do servidor, sem passar por um banco de dados. Construído com Laravel no backend e Vue 3 + Inertia no frontend, numa única aplicação sem API REST separada.
 
-## About Laravel
+## Demonstração
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![screenshot](docs/screenshot.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Demo ao vivo: [ADICIONAR LINK]
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Funcionalidades
 
-## Learning Laravel
+- Navegação pelos diretórios do disco a partir da própria URL (`/{caminho}`), com breadcrumb clicável e uma árvore de pastas na barra lateral.
+- Listagem de arquivos e pastas em grade, com ícone específico por extensão (PDF, Word, Excel, imagem, áudio, vídeo, código, compactado etc).
+- Criação de arquivo ou pasta na pasta atual, com validação de nome duplicado antes de gravar no disco.
+- Upload de arquivo para a pasta atual, com barra de progresso e mensagem de erro inline quando já existe um arquivo com o mesmo nome.
+- Visualização de arquivo sem precisar baixar: texto, imagem, PDF, vídeo e áudio abrem direto num modal; para os demais tipos o modal avisa que não há pré-visualização disponível.
+- Download de qualquer arquivo do diretório atual.
+- Espaço livre e total do disco exibido na barra lateral.
+- Alternância entre tema claro e escuro.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Renomear e excluir arquivos/pasta já têm rota e lógica prontas no backend (`PUT`/`DELETE /estrutura`, tratando nome duplicado e item inexistente), mas a integração dessas ações no menu de contexto do frontend ainda está incompleta.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Tecnologias
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+**Backend**
+- PHP 8.3+
+- Laravel 13
+- Inertia.js (adapter `inertiajs/inertia-laravel` 3.1)
+- Ziggy 2.6 — expõe as rotas nomeadas do Laravel para o JS
+- SQLite — usado só para sessão, cache e fila do próprio Laravel; os arquivos e pastas não passam por banco de dados, são lidos e gravados direto no disco via Laravel Filesystem
 
-## Agentic Development
+**Frontend**
+- Vue 3.5 (`<script setup>`, TypeScript)
+- Inertia.js para Vue 3
+- Vite 8
+- PrimeVue 4.5 (Dialog, Breadcrumb, ContextMenu)
+- Bootstrap 5.3 + Bootstrap Icons — base da interface
+- Tailwind CSS 4 (via `@tailwindcss/vite`)
+- VueUse 14.3
+- Axios
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Como rodar localmente
+
+O disco usado pela aplicação (`c-drive`, em `config/filesystems.php`) aponta direto para a raiz do disco `C:\`, então hoje o projeto foi pensado para rodar em Windows. Além disso, a rota inicial redireciona para `/Temp`, então é preciso existir uma pasta `C:\Temp` — é ela que a aplicação abre por padrão e usa para montar a árvore da barra lateral.
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clonar o repositório
+git clone [ADICIONAR LINK] archive-manager
+cd archive-manager
 
-php artisan boost:install
+# 2. Instalar dependências PHP
+composer install
+
+# 3. Configurar o ambiente
+cp .env.example .env
+php artisan key:generate
+
+# 4. Criar o banco SQLite (usado só por sessão/cache/fila)
+touch database/database.sqlite
+php artisan migrate
+
+# 5. Instalar dependências JS
+npm install
+
+# 6. Garantir que existe a pasta raiz esperada pela aplicação
+#    (no Windows, crie manualmente se ainda não existir)
+mkdir C:\Temp
+
+# 7. Subir o projeto (servidor, fila, logs e Vite juntos)
+composer run dev
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Com isso, a aplicação fica disponível em `http://localhost:8000`.
 
-## Contributing
+## Decisões técnicas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Não existe uma tabela de "arquivos" no banco — toda leitura e escrita passa direto pelo `Storage::disk('c-drive')` do Laravel, então o disco é a única fonte de verdade e não há risco de o banco ficar dessincronizado com o que está no filesystem. O SQLite fica reservado só para o que é do próprio framework (sessão, cache, fila).
 
-## Code of Conduct
+Erros de domínio (nome duplicado, item que já não existe mais) são `RuntimeException` lançadas nos models (`Estrutura`, `File`) e capturadas no controller, que devolve o erro via `withErrors()` do Inertia. Isso deixa a mensagem específica chegando pronta no `form.errors` do Vue, sem precisar montar tratamento de erro manual em cada componente.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Autor
 
-## Security Vulnerabilities
+**Davi Hely**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- LinkedIn: [ADICIONAR LINK]
+- Portfólio: https://davihely.github.io/profile-page

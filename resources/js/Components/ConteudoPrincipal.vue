@@ -61,8 +61,20 @@ const menu = ref();
 const selectedStructure = ref();
 
 const items = ref([
-    { label: "Copy", icon: "pi pi-copy" },
-    { label: "Rename", icon: "pi pi-file-edit" },
+    {
+        label: "Renomear",
+        icon: "bi bi-pencil-square",
+        command: () => {
+            alert("alterar");
+        },
+    },
+    {
+        label: "Excluir",
+        icon: "bi bi-trash",
+        command: () => {
+            const url = route("estrutura.destroy", { selectedStructure });
+        },
+    },
 ]);
 </script>
 
@@ -88,3 +100,43 @@ const items = ref([
         />
     </main>
 </template>
+<style>
+.p-contextmenu {
+    background-color: var(--bs-body-bg) !important;
+    border: 1px solid var(--bs-border-color) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    padding: 0.25rem !important;
+    font-size: 0.875rem !important;
+    min-width: 11rem;
+}
+
+.p-contextmenu-item-link {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 0.375rem;
+    color: var(--bs-body-color) !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+.p-contextmenu-item-link:hover {
+    background-color: var(--bs-tertiary-bg) !important;
+}
+
+.p-contextmenu-item-icon {
+    color: var(--bs-secondary-color) !important;
+    font-size: 0.85rem;
+}
+
+.p-contextmenu-item-label {
+    line-height: 1;
+}
+
+.p-contextmenu-separator {
+    border-top: 1px solid var(--bs-border-color) !important;
+    margin: 0.25rem 0;
+}
+</style>
