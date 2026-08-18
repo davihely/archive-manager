@@ -25,7 +25,7 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 
 - PHP 8.3+
 - Laravel 13
-- Inertia.js (adapter `inertiajs/inertia-laravel` 3.1)
+- Inertia.js 
 
 **Frontend**
 
