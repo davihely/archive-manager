@@ -94,22 +94,6 @@ APP_READ_ONLY=false
 
 No Windows, o padrão já funciona — basta existir a pasta `C:\Temp`.
 
-## Deploy
-
-O projeto inclui um `Dockerfile` multi-stage que compila os assets do Vite em Node e roda a aplicação em PHP, o que permite publicar em qualquer plataforma com suporte a Docker.
-
-Para uma demo pública, o recomendado é apontar a raiz para uma pasta isolada e ativar o modo somente-leitura:
-
-```dotenv
-APP_ENV=production
-APP_DEBUG=false
-APP_READ_ONLY=true
-FILE_ROOT=/app/storage/app
-FILE_START_PATH=demo
-```
-
-Aplicações Laravel atrás de proxy (como o do Render) precisam confiar no proxy para gerar URLs em HTTPS corretamente — isso já está configurado em `bootstrap/app.php`.
-
 ## Autor
 
 **Davi Hely**
