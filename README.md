@@ -33,7 +33,7 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 - Inertia.js para Vue 3
 - Vite 8
 - Bootstrap 5.3 + Bootstrap Icons — base da interface
-- Tailwind CSS 4 (via `@tailwindcss/vite`)
+- Tailwind CSS 4 
 
 ## Como rodar localmente
 
