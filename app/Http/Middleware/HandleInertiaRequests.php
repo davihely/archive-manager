@@ -37,7 +37,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            'readOnly' => (bool) config('app.read_only'),
         ];
     }
 }

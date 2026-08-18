@@ -123,4 +123,18 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Read-only Mode (Archive Manager)
+    |--------------------------------------------------------------------------
+    |
+    | Quando true, bloqueia upload, criação, renomeação e exclusão de
+    | arquivos/pastas (backend e frontend). Usado para hospedar o projeto
+    | como demonstração pública sem risco de escrita no disco configurado.
+    | Sem APP_READ_ONLY definida, continua false (comportamento atual).
+    |
+    */
+
+    'read_only' => (bool) env('APP_READ_ONLY', false),
+
 ];

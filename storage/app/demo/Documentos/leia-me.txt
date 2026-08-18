@@ -1,0 +1,1 @@
+Esta é uma subpasta de exemplo, usada para mostrar a navegação em árvore da barra lateral e o breadcrumb.

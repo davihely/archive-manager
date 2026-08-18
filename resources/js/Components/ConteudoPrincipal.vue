@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, ref } from "vue";
+import { useTemplateRef, ref, computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import VisualizadorArquivo from "./Geral/VisualizadorArquivo.vue";
 import BarraNavegacao from "./ConteudoPrincipal/BarraNavegacao.vue";
@@ -13,6 +13,7 @@ import { obterIconeArquivo, obterCategoriaArquivo } from "../Utils/arquivoTipo";
 import ContextMenu from "primevue/contextmenu";
 
 const page = usePage();
+const readOnly = computed(() => Boolean(page.props.readOnly));
 
 const props = defineProps<{
     currentDir: INoPasta[];
@@ -44,7 +45,8 @@ const abrirArquivo = (dir: INoPasta) => {
 };
 
 const abrirMenuBotaoDireito = (dir: INoPasta) => {
-    console.log(dir);
+    if (readOnly.value) return;
+
     selectedStructure.value = dir;
     menu.value.show(event);
 };

@@ -1,0 +1,5 @@
+Este é um arquivo de texto de exemplo, usado como conteúdo inicial da demo publica do Archive Manager.
+
+Nesta pasta você encontra alguns tipos diferentes de arquivo (texto, imagem, PDF) e uma subpasta, só para o navegador de arquivos ter o que mostrar.
+
+Se APP_READ_ONLY estiver ativo, upload, criação, renomeação e exclusão ficam desativados — só dá pra navegar, pré-visualizar e baixar.

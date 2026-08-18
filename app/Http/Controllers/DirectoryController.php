@@ -44,7 +44,7 @@ class DirectoryController extends Controller
 
     public function sideMenu()
     {
-        return $this->buildTree('Temp');
+        return $this->buildTree(config('filesystems.start_path'));
     }
 
     private function buildTree(string $path): array

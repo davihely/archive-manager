@@ -4,7 +4,7 @@ import ItemPasta from "./ItemPasta.vue";
 import ProgressoBarra from "./ProgressoBarra.vue";
 import type INoPasta from "../Interfaces/INoPasta";
 import type { ModalPayLoad } from "../../Interfaces/IModal";
-import { ref, useTemplateRef, onMounted } from "vue";
+import { ref, computed, useTemplateRef, onMounted } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { onClickOutside } from "@vueuse/core";
 
@@ -14,6 +14,7 @@ const props = defineProps<{
 }>();
 
 const page = usePage();
+const readOnly = computed(() => Boolean(page.props.readOnly));
 
 const formUpload = useForm({
     file: null as File | null,
@@ -74,7 +75,7 @@ function handleSubmit() {
         class="bg-body-tertiary border-end border-secondary-subtle d-flex flex-column"
         style="width: 260px"
     >
-        <div class="p-3">
+        <div class="p-3" v-if="!readOnly">
             <div ref="dropdownRef" class="dropdown position-relative w-100">
                 <button
                     @click="toggleDropdown"

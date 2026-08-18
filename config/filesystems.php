@@ -40,7 +40,7 @@ return [
 
         'c-drive' => [
             'driver' => 'local',
-            'root' => 'C:\\',
+            'root' => env('FILE_ROOT', 'C:\\'),
             'throw' => true,
         ],
 
@@ -67,6 +67,19 @@ return [
         ],
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Archive Manager Start Path
+    |--------------------------------------------------------------------------
+    |
+    | Caminho (relativo à raiz do disco "c-drive") que a aplicação abre por
+    | padrão em "/". Sem FILE_START_PATH definida, continua "Temp", que é o
+    | comportamento atual.
+    |
+    */
+
+    'start_path' => trim(env('FILE_START_PATH', 'Temp'), '/'),
 
     /*
     |--------------------------------------------------------------------------
