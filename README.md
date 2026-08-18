@@ -4,9 +4,7 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 
 ## Demonstração
 
-![screenshot](docs/screenshot.png)
-
-Demo ao vivo: [ADICIONAR LINK]
+Demo ao vivo: [[ADICIONAR LINK]](https://archive-manager-q82m.onrender.com)
 
 ## Funcionalidades
 
@@ -75,5 +73,5 @@ Com isso, a aplicação fica disponível em `http://localhost:8000`.
 
 **Davi Hely**
 
-- LinkedIn: [ADICIONAR LINK]
+- LinkedIn: [[ADICIONAR LINK]](https://www.linkedin.com/in/davihely/)
 - Portfólio: https://davihely.github.io/profile-page
