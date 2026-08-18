@@ -6,9 +6,7 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 
 ![Tela principal](docs/screenshot.png)
 
-**[Ver demo ao vivo](https://archive-manager-q82m.onrender.com)**
-
-> A demo roda em modo somente-leitura, apontando para uma pasta de exemplo em vez do disco inteiro. Está hospedada em tier gratuito, então o primeiro acesso pode levar cerca de um minuto até o servidor iniciar.
+**[Demo](https://archive-manager-q82m.onrender.com)**
 
 ## Funcionalidades
 
@@ -39,24 +37,14 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 - PHP 8.3+
 - Laravel 13
 - Inertia.js (adapter `inertiajs/inertia-laravel` 3.1)
-- Ziggy 2.6 — expõe as rotas nomeadas do Laravel para o JS
-- SQLite — usado só para sessão, cache e fila do próprio Laravel
 
 **Frontend**
 
-- Vue 3.5 (`<script setup>`, TypeScript)
+- Vue 3.5 
 - Inertia.js para Vue 3
 - Vite 8
-- PrimeVue 4.5 (Dialog, Breadcrumb, ContextMenu)
 - Bootstrap 5.3 + Bootstrap Icons — base da interface
 - Tailwind CSS 4 (via `@tailwindcss/vite`)
-- VueUse 14.3
-- Axios
-
-**Infraestrutura**
-
-- Docker (multi-stage: build dos assets em Node, execução em PHP)
-- Deploy no Render
 
 ## Como rodar localmente
 
