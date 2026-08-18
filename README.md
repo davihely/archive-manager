@@ -19,16 +19,6 @@ Gerenciador de arquivos via navegador: navega, cria, faz upload e visualiza arqu
 - Espaço livre e total do disco exibido na barra lateral.
 - Alternância entre tema claro e escuro.
 
-## Decisões técnicas
-
-**O disco é a fonte da verdade, não o banco.** Arquivos e pastas são lidos e gravados direto via Laravel Filesystem. Manter um espelho em banco criaria um problema de sincronização (qualquer alteração feita fora da aplicação deixaria os dados defasados) sem trazer ganho real para o caso de uso. O SQLite entra só para sessão, cache e fila do próprio Laravel.
-
-**Inertia no lugar de uma API REST separada.** Os controllers devolvem props direto para os componentes Vue, o que evita manter uma camada de serialização e autenticação duplicada para uma aplicação que só tem um cliente.
-
-**O caminho vive na URL.** Como a navegação é refletida em `/{caminho}`, o botão voltar do navegador funciona e qualquer pasta pode ser compartilhada por link, sem estado escondido no frontend.
-
-**Raiz e modo de escrita configuráveis por ambiente.** Isso permite publicar uma demo pública apontada para uma pasta isolada e sem permissão de escrita, usando o mesmo código que roda localmente com acesso completo ao disco.
-
 ## Tecnologias
 
 **Backend**
